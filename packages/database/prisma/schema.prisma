@@ -82,6 +82,7 @@ enum Channel {
 
 enum MessageStatus {
   PENDING
+  SCHEDULED
   SENT
   DELIVERED
   READ
@@ -135,6 +136,7 @@ model Message {
   to           String
   externalId   String?
   mediaUrl     String?
+  scheduledAt  DateTime?
   sentAt       DateTime?
   deliveredAt  DateTime?
   readAt       DateTime?
@@ -146,4 +148,5 @@ model Message {
   @@index([status])
   @@index([externalId])
   @@index([userId])
+  @@index([scheduledAt])
 }

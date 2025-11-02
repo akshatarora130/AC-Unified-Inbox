@@ -7,6 +7,7 @@ export enum Channel {
 
 export enum MessageStatus {
   PENDING = "PENDING",
+  SCHEDULED = "SCHEDULED",
   SENT = "SENT",
   DELIVERED = "DELIVERED",
   READ = "READ",
