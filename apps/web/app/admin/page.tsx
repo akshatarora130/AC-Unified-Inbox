@@ -1,19 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import {
-  LogOut,
-  Users,
-  Loader2,
-  Shield,
-  Edit,
-  Plus,
-  X,
-  Save,
-} from "lucide-react";
+import { Users, Loader2, Edit, Plus, X, Save } from "lucide-react";
 import { User, UserRole } from "@repo/types";
+import Header from "@/components/Header";
 
 export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -30,8 +22,27 @@ export default function AdminPage() {
     role: UserRole.VIEWER,
   });
   const router = useRouter();
+  const hasInitialized = useRef(false);
+
+  const fetchUsers = async () => {
+    setIsLoadingUsers(true);
+    try {
+      const response = await fetch("/api/admin/users");
+      if (response.ok) {
+        const { users: usersData } = await response.json();
+        setUsers(usersData);
+      }
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    } finally {
+      setIsLoadingUsers(false);
+    }
+  };
 
   useEffect(() => {
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+
     const checkAuth = async () => {
       try {
         const sessionResponse = await authClient.getSession();
@@ -83,21 +94,6 @@ export default function AdminPage() {
     checkAuth();
   }, [router]);
 
-  const fetchUsers = async () => {
-    setIsLoadingUsers(true);
-    try {
-      const response = await fetch("/api/admin/users");
-      if (response.ok) {
-        const { users: usersData } = await response.json();
-        setUsers(usersData);
-      }
-    } catch (error) {
-      console.error("Failed to fetch users:", error);
-    } finally {
-      setIsLoadingUsers(false);
-    }
-  };
-
   const handleEditRole = async (userId: string) => {
     try {
       const response = await fetch(`/api/admin/users/${userId}`, {
@@ -147,15 +143,6 @@ export default function AdminPage() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await authClient.signOut();
-      router.push("/");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
-
   const getRoleBadgeColor = (role: UserRole) => {
     switch (role) {
       case UserRole.ADMIN:
@@ -181,31 +168,13 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-900">
-              <Shield className="h-6 w-6 text-white" />
-            </div>
-            <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => router.push("/home")}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-400 hover:bg-gray-50"
-            >
-              Back to Home
-            </button>
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-400 hover:bg-gray-50"
-            >
-              <LogOut className="h-4 w-4" />
-              <span>Sign Out</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header
+        user={user}
+        title="Admin Panel"
+        subtitle="User Management"
+        showBackButton={true}
+        onBack={() => router.push("/home")}
+      />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-center justify-between">

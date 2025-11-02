@@ -9,13 +9,11 @@ export const auth = betterAuth({
   }),
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      prompt: "select_account",
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       disableSignUp: true,
       scope: ["openid", "profile", "email"],
-      additionalParams: {
-        prompt: "select_account",
-      },
     },
   },
   plugins: [nextCookies()],

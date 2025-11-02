@@ -26,6 +26,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  sentMessages  Message[]
 }
 
 model Session {
@@ -70,4 +71,79 @@ model Verification {
 
   @@index([identifier])
   @@index([token])
+}
+
+enum Channel {
+  SMS
+  WHATSAPP
+  EMAIL
+  TWITTER
+}
+
+enum MessageStatus {
+  PENDING
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+model Contact {
+  id        String   @id @default(uuid())
+  phone     String?
+  email     String?
+  firstName String?
+  lastName  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  threads   Thread[]
+
+  @@index([phone])
+  @@index([email])
+}
+
+model Thread {
+  id           String   @id @default(uuid())
+  contactId    String
+  contact      Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  lastActivity DateTime @default(now())
+  unreadCount  Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  messages     Message[]
+
+  @@index([contactId])
+  @@index([lastActivity])
+}
+
+model Message {
+  id           String          @id @default(uuid())
+  threadId     String
+  thread       Thread          @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  userId       String?
+  user         User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  channel      Channel
+  direction    MessageDirection
+  status       MessageStatus   @default(PENDING)
+  content      String
+  from         String
+  to           String
+  externalId   String?
+  mediaUrl     String?
+  sentAt       DateTime?
+  deliveredAt  DateTime?
+  readAt       DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([threadId])
+  @@index([channel])
+  @@index([status])
+  @@index([externalId])
+  @@index([userId])
 }
