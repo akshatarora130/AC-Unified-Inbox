@@ -1,24 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import {
-  LogOut,
   Mail,
   User as UserIcon,
   Loader2,
   Shield,
-  Settings,
+  MessageSquare,
 } from "lucide-react";
 import { User, UserRole } from "@repo/types";
+import Header from "@/components/Header";
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalMessages: 0,
+    totalUnread: 0,
+  });
   const router = useRouter();
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+
     const checkAuth = async () => {
       try {
         const sessionResponse = await authClient.getSession();
@@ -53,6 +61,7 @@ export default function HomePage() {
         };
 
         setUser(userDb);
+        await fetchStats();
       } catch (error) {
         console.error("Auth check failed:", error);
         router.push("/");
@@ -64,12 +73,15 @@ export default function HomePage() {
     checkAuth();
   }, [router]);
 
-  const handleLogout = async () => {
+  const fetchStats = async () => {
     try {
-      await authClient.signOut();
-      router.push("/");
+      const response = await fetch("/api/dashboard/stats");
+      if (response.ok) {
+        const data = await response.json();
+        setStats(data);
+      }
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error("Failed to fetch stats:", error);
     }
   };
 
@@ -87,35 +99,12 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-900">
-              <Mail className="h-6 w-6 text-white" />
-            </div>
-            <h1 className="text-xl font-bold text-gray-900">Unified Inbox</h1>
-          </div>
-          <div className="flex items-center space-x-3">
-            {user.role === UserRole.ADMIN && (
-              <button
-                onClick={() => router.push("/admin")}
-                className="flex items-center space-x-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-400 hover:bg-gray-50"
-              >
-                <Settings className="h-4 w-4" />
-                <span>Admin Panel</span>
-              </button>
-            )}
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-400 hover:bg-gray-50"
-            >
-              <LogOut className="h-4 w-4" />
-              <span>Sign Out</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header
+        user={user}
+        title="Unified Inbox"
+        subtitle="Dashboard"
+        showAdminButton={true}
+      />
 
       {/* Main Content */}
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -187,44 +176,33 @@ export default function HomePage() {
         </div>
 
         {/* Dashboard Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2">
           {/* Stats Cards */}
           <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
             <div className="mb-2 text-sm font-medium text-gray-600">
               Total Messages
             </div>
-            <div className="text-3xl font-bold text-gray-900">0</div>
-            <div className="mt-2 text-sm text-gray-500">No messages yet</div>
+            <div className="text-3xl font-bold text-gray-900">
+              {stats.totalMessages}
+            </div>
+            <div className="mt-2 text-sm text-gray-500">
+              {stats.totalMessages === 0
+                ? "No messages yet"
+                : `${stats.totalMessages} message${stats.totalMessages === 1 ? "" : "s"}`}
+            </div>
           </div>
 
           <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
             <div className="mb-2 text-sm font-medium text-gray-600">Unread</div>
-            <div className="text-3xl font-bold text-gray-900">0</div>
-            <div className="mt-2 text-sm text-gray-500">All caught up!</div>
-          </div>
-
-          <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
-            <div className="mb-2 text-sm font-medium text-gray-600">
-              Connected Accounts
+            <div className="text-3xl font-bold text-gray-900">
+              {stats.totalUnread}
             </div>
-            <div className="text-3xl font-bold text-gray-900">1</div>
             <div className="mt-2 text-sm text-gray-500">
-              Your primary account
+              {stats.totalUnread === 0
+                ? "All caught up!"
+                : `${stats.totalUnread} unread message${stats.totalUnread === 1 ? "" : "s"}`}
             </div>
           </div>
-        </div>
-
-        {/* Empty State */}
-        <div className="mt-8 rounded-2xl bg-white p-12 text-center shadow-sm ring-1 ring-gray-100">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-            <Mail className="h-8 w-8 text-gray-600" />
-          </div>
-          <h3 className="mb-2 text-xl font-semibold text-gray-900">
-            Your inbox is empty
-          </h3>
-          <p className="text-gray-600">
-            Connect your email accounts to start managing your messages
-          </p>
         </div>
       </main>
     </div>
