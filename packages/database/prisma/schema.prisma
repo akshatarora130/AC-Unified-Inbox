@@ -27,6 +27,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   sentMessages  Message[]
+  notes         Note[]
 }
 
 model Session {
@@ -103,6 +104,7 @@ model Contact {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   threads   Thread[]
+  notes     Note[]
 
   @@index([phone])
   @@index([email])
@@ -149,4 +151,20 @@ model Message {
   @@index([externalId])
   @@index([userId])
   @@index([scheduledAt])
+}
+
+model Note {
+  id        String   @id @default(uuid())
+  contactId String
+  contact   Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String
+  isPublic Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([contactId])
+  @@index([userId])
+  @@index([isPublic])
 }
