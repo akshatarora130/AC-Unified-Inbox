@@ -3,8 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { LogOut, Mail, User as UserIcon, Loader2 } from "lucide-react";
-import { User } from "@repo/types";
+import {
+  LogOut,
+  Mail,
+  User as UserIcon,
+  Loader2,
+  Shield,
+  Settings,
+} from "lucide-react";
+import { User, UserRole } from "@repo/types";
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -14,28 +21,38 @@ export default function HomePage() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await authClient.getSession();
+        const sessionResponse = await authClient.getSession();
 
-        if (!response?.data?.user) {
+        if (!sessionResponse?.data?.user) {
           router.push("/");
           return;
         }
 
-        const sessionUser = response.data.user as any;
+        const userResponse = await fetch("/api/user");
+        if (!userResponse.ok) {
+          router.push("/");
+          return;
+        }
 
-        // Use firstName and lastName directly from the database
-        const userWithNames: User = {
-          id: sessionUser.id,
-          firstName: sessionUser.firstName || "",
-          lastName: sessionUser.lastName || "",
-          email: sessionUser.email,
-          image: sessionUser.image,
-          emailVerified: sessionUser.emailVerified,
-          createdAt: sessionUser.createdAt,
-          updatedAt: sessionUser.updatedAt,
+        const { user: userData } = await userResponse.json();
+
+        const userDb: User = {
+          id: userData.id,
+          firstName: userData.firstName || "",
+          lastName: userData.lastName || "",
+          email: userData.email,
+          image: userData.image,
+          emailVerified: userData.emailVerified,
+          role: (userData.role as UserRole) || UserRole.VIEWER,
+          createdAt: userData.createdAt
+            ? new Date(userData.createdAt)
+            : undefined,
+          updatedAt: userData.updatedAt
+            ? new Date(userData.updatedAt)
+            : undefined,
         };
 
-        setUser(userWithNames);
+        setUser(userDb);
       } catch (error) {
         console.error("Auth check failed:", error);
         router.push("/");
@@ -79,13 +96,24 @@ export default function HomePage() {
             </div>
             <h1 className="text-xl font-bold text-gray-900">Unified Inbox</h1>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center space-x-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-400 hover:bg-gray-50"
-          >
-            <LogOut className="h-4 w-4" />
-            <span>Sign Out</span>
-          </button>
+          <div className="flex items-center space-x-3">
+            {user.role === UserRole.ADMIN && (
+              <button
+                onClick={() => router.push("/admin")}
+                className="flex items-center space-x-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-400 hover:bg-gray-50"
+              >
+                <Settings className="h-4 w-4" />
+                <span>Admin Panel</span>
+              </button>
+            )}
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-400 hover:bg-gray-50"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Sign Out</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -134,6 +162,23 @@ export default function HomePage() {
                   <span className="font-medium">Full Name:</span>
                   <span className="ml-2">
                     {user.firstName} {user.lastName}
+                  </span>
+                </div>
+                <div className="flex items-center text-sm text-gray-700">
+                  <Shield className="mr-2 h-4 w-4 text-gray-400" />
+                  <span className="font-medium">Role:</span>
+                  <span className="ml-2">
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                        user.role === UserRole.ADMIN
+                          ? "bg-purple-100 text-purple-700"
+                          : user.role === UserRole.EDITOR
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      {user.role}
+                    </span>
                   </span>
                 </div>
               </div>
