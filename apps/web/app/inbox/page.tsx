@@ -3,7 +3,15 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { MessageSquare, Loader2, Send, Search, Phone, X } from "lucide-react";
+import {
+  MessageSquare,
+  Loader2,
+  Send,
+  Search,
+  Phone,
+  X,
+  Clock,
+} from "lucide-react";
 import { User, UserRole, Channel } from "@repo/types";
 import Header from "@/components/Header";
 
@@ -25,6 +33,7 @@ interface Thread {
     direction: string;
     status: string;
     createdAt: string;
+    scheduledAt?: string | null;
   }>;
 }
 
@@ -37,6 +46,7 @@ interface Message {
   from: string;
   to: string;
   createdAt: string;
+  scheduledAt?: string | null;
 }
 
 type FilterChannel = Channel | "all";
@@ -50,6 +60,8 @@ export default function InboxPage() {
   const [messageContent, setMessageContent] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterChannel, setFilterChannel] = useState<FilterChannel>("all");
+  const [isScheduled, setIsScheduled] = useState(false);
+  const [scheduledDateTime, setScheduledDateTime] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingThreads, setIsLoadingThreads] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -157,13 +169,19 @@ export default function InboxPage() {
     setFilteredThreads(filtered);
   }, [threads, filterChannel, searchQuery]);
 
-  const fetchMessages = async (threadId: string) => {
+  const fetchMessages = async (threadId: string, updateUnreadCount = false) => {
     try {
       const response = await fetch(`/api/threads/${threadId}/messages`);
       if (response.ok) {
         const { messages: messagesData } = await response.json();
         setMessages(messagesData);
-        await fetchThreads();
+        if (updateUnreadCount) {
+          setThreads((prevThreads) =>
+            prevThreads.map((thread) =>
+              thread.id === threadId ? { ...thread, unreadCount: 0 } : thread
+            )
+          );
+        }
       }
     } catch (error) {
       console.error("Failed to fetch messages:", error);
@@ -172,7 +190,7 @@ export default function InboxPage() {
 
   const handleThreadSelect = (thread: Thread) => {
     setSelectedThread(thread);
-    fetchMessages(thread.id);
+    fetchMessages(thread.id, true);
   };
 
   const handleSendMessage = async () => {
@@ -188,6 +206,11 @@ export default function InboxPage() {
 
     if (!to) return;
 
+    if (isScheduled && !scheduledDateTime) {
+      alert("Please select a date and time for scheduling");
+      return;
+    }
+
     setIsSending(true);
     try {
       const response = await fetch("/api/messages/send", {
@@ -198,11 +221,14 @@ export default function InboxPage() {
           channel,
           content: messageContent,
           to,
+          scheduledAt: isScheduled ? scheduledDateTime : null,
         }),
       });
 
       if (response.ok) {
         setMessageContent("");
+        setIsScheduled(false);
+        setScheduledDateTime("");
         await fetchMessages(selectedThread.id);
         await fetchThreads();
       } else {
@@ -261,9 +287,12 @@ export default function InboxPage() {
     return null;
   }
 
-  const getThreadStatus = (thread: Thread): "unread" | "read" | "sent" => {
+  const getThreadStatus = (
+    thread: Thread
+  ): "unread" | "read" | "sent" | "scheduled" => {
     if (thread.unreadCount > 0) return "unread";
     const lastMessage = thread.messages[0];
+    if (lastMessage?.status === "SCHEDULED") return "scheduled";
     if (lastMessage?.direction === "OUTBOUND") return "sent";
     return "read";
   };
@@ -278,13 +307,25 @@ export default function InboxPage() {
       id: "read",
       title: "Read",
       count: threads.filter(
-        (t) => t.unreadCount === 0 && t.messages[0]?.direction !== "OUTBOUND"
+        (t) =>
+          t.unreadCount === 0 &&
+          t.messages[0]?.direction !== "OUTBOUND" &&
+          t.messages[0]?.status !== "SCHEDULED"
       ).length,
     },
     {
       id: "sent",
       title: "Sent",
-      count: threads.filter((t) => t.messages[0]?.direction === "OUTBOUND")
+      count: threads.filter(
+        (t) =>
+          t.messages[0]?.direction === "OUTBOUND" &&
+          t.messages[0]?.status !== "SCHEDULED"
+      ).length,
+    },
+    {
+      id: "scheduled",
+      title: "Scheduled",
+      count: threads.filter((t) => t.messages[0]?.status === "SCHEDULED")
         .length,
     },
   ];
@@ -383,7 +424,9 @@ export default function InboxPage() {
                               ? "No read conversations"
                               : column.id === "sent"
                                 ? "No sent conversations"
-                                : "No conversations in this category"}
+                                : column.id === "scheduled"
+                                  ? "No scheduled messages"
+                                  : "No conversations in this category"}
                         </p>
                       </div>
                     ) : (
@@ -420,10 +463,24 @@ export default function InboxPage() {
                                     <>
                                       <div className="mb-2 flex items-center space-x-2">
                                         {getChannelBadge(lastMessage.channel)}
+                                        {lastMessage.status === "SCHEDULED" && (
+                                          <span className="flex items-center space-x-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-700">
+                                            <Clock className="h-3 w-3" />
+                                            <span>Scheduled</span>
+                                          </span>
+                                        )}
                                       </div>
                                       <p className="mb-2 line-clamp-2 text-sm text-gray-600">
                                         {lastMessage.content}
                                       </p>
+                                      {lastMessage.scheduledAt && (
+                                        <p className="mb-2 text-xs text-orange-600">
+                                          Scheduled:{" "}
+                                          {new Date(
+                                            lastMessage.scheduledAt
+                                          ).toLocaleString()}
+                                        </p>
+                                      )}
                                     </>
                                   )}
                                   <div className="flex items-center justify-between">
@@ -451,9 +508,11 @@ export default function InboxPage() {
             })}
           </div>
         )}
+      </div>
 
-        {selectedThread && (
-          <div className="flex w-[500px] flex-col border-l border-gray-200 bg-white">
+      {selectedThread && (
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4">
+          <div className="flex h-[90vh] w-full max-w-4xl flex-col rounded-lg bg-white shadow-xl">
             <div className="border-b border-gray-200 px-6 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
@@ -466,8 +525,11 @@ export default function InboxPage() {
                   </p>
                 </div>
                 <button
-                  onClick={() => setSelectedThread(null)}
-                  className="text-gray-400 hover:text-gray-600"
+                  onClick={() => {
+                    setSelectedThread(null);
+                    setMessages([]);
+                  }}
+                  className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -496,22 +558,35 @@ export default function InboxPage() {
                       <div
                         className={`max-w-xs rounded-lg px-4 py-2 ${
                           message.direction === "OUTBOUND"
-                            ? "bg-blue-600 text-white"
+                            ? message.status === "SCHEDULED"
+                              ? "bg-orange-100 text-orange-900"
+                              : "bg-blue-600 text-white"
                             : "bg-gray-200 text-gray-900"
                         }`}
                       >
                         <div className="mb-1 flex items-center space-x-2">
                           {getChannelBadge(message.channel)}
+                          {message.status === "SCHEDULED" && (
+                            <span className="flex items-center space-x-1 rounded-full bg-orange-200 px-2 py-0.5 text-xs font-medium text-orange-800">
+                              <Clock className="h-3 w-3" />
+                              <span>Scheduled</span>
+                            </span>
+                          )}
                         </div>
                         <p className="text-sm">{message.content}</p>
                         <p
                           className={`mt-1 text-xs ${
                             message.direction === "OUTBOUND"
-                              ? "text-blue-100"
+                              ? message.status === "SCHEDULED"
+                                ? "text-orange-700"
+                                : "text-blue-100"
                               : "text-gray-500"
                           }`}
                         >
-                          {new Date(message.createdAt).toLocaleTimeString()}
+                          {message.status === "SCHEDULED" &&
+                          (message as any).scheduledAt
+                            ? `Scheduled: ${new Date((message as any).scheduledAt).toLocaleString()}`
+                            : new Date(message.createdAt).toLocaleTimeString()}
                         </p>
                       </div>
                     </div>
@@ -522,31 +597,65 @@ export default function InboxPage() {
 
             <div className="border-t border-gray-200 bg-white px-6 py-4">
               {canSendMessages ? (
-                <div className="flex items-center space-x-4">
-                  <input
-                    type="text"
-                    value={messageContent}
-                    onChange={(e) => setMessageContent(e.target.value)}
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSendMessage();
-                      }
-                    }}
-                    placeholder="Type a message..."
-                    className="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-gray-900 focus:ring-gray-900 focus:outline-none"
-                  />
-                  <button
-                    onClick={handleSendMessage}
-                    disabled={!messageContent.trim() || isSending}
-                    className="rounded-lg bg-gray-900 px-6 py-2 text-white transition-all hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {isSending ? (
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                    ) : (
-                      <Send className="h-5 w-5" />
-                    )}
-                  </button>
+                <div className="space-y-3">
+                  {isScheduled && (
+                    <div className="flex items-center space-x-2 rounded-lg bg-orange-50 p-3">
+                      <Clock className="h-4 w-4 text-orange-600" />
+                      <input
+                        type="datetime-local"
+                        value={scheduledDateTime}
+                        onChange={(e) => setScheduledDateTime(e.target.value)}
+                        min={new Date().toISOString().slice(0, 16)}
+                        className="flex-1 rounded-lg border border-orange-300 bg-white px-3 py-2 text-sm focus:border-orange-500 focus:ring-orange-500 focus:outline-none"
+                      />
+                      <button
+                        onClick={() => {
+                          setIsScheduled(false);
+                          setScheduledDateTime("");
+                        }}
+                        className="text-sm text-orange-600 hover:text-orange-700"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
+                  <div className="flex items-center space-x-4">
+                    <input
+                      type="text"
+                      value={messageContent}
+                      onChange={(e) => setMessageContent(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSendMessage();
+                        }
+                      }}
+                      placeholder="Type a message..."
+                      className="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-gray-900 focus:ring-gray-900 focus:outline-none"
+                    />
+                    <button
+                      onClick={() => setIsScheduled(!isScheduled)}
+                      className={`rounded-lg px-3 py-2 transition-all ${
+                        isScheduled
+                          ? "bg-orange-600 text-white hover:bg-orange-700"
+                          : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                      }`}
+                      title="Schedule message"
+                    >
+                      <Clock className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={handleSendMessage}
+                      disabled={!messageContent.trim() || isSending}
+                      className="rounded-lg bg-gray-900 px-6 py-2 text-white transition-all hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {isSending ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                      ) : (
+                        <Send className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="rounded-lg bg-gray-50 px-4 py-3 text-center">
@@ -558,8 +667,8 @@ export default function InboxPage() {
               )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

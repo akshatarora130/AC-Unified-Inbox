@@ -2,7 +2,12 @@ import { auth } from "@/lib/auth";
 import prisma from "@repo/database";
 import { sendSMS, sendWhatsApp } from "@/lib/twilio";
 import { NextRequest } from "next/server";
-import { Channel, MessageDirection, MessageStatus } from "@repo/types";
+import {
+  Channel,
+  MessageDirection,
+  MessageStatus,
+  UserRole,
+} from "@repo/types";
 
 export async function POST(req: NextRequest) {
   const session = await auth.api.getSession({
@@ -22,7 +27,7 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "User not found" }, { status: 404 });
   }
 
-  if (user.role === "VIEWER") {
+  if (user.role === UserRole.VIEWER) {
     return Response.json(
       {
         error:
@@ -33,11 +38,14 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { threadId, channel, content, to } = body;
+  const { threadId, channel, content, to, scheduledAt } = body;
 
   if (!threadId || !channel || !content || !to) {
     return Response.json({ error: "Missing required fields" }, { status: 400 });
   }
+
+  const scheduledDate = scheduledAt ? new Date(scheduledAt) : null;
+  const isScheduled = scheduledDate && scheduledDate > new Date();
 
   const thread = await prisma.thread.findUnique({
     where: { id: threadId },
@@ -48,19 +56,55 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Thread not found" }, { status: 404 });
   }
 
-  let twilioResult;
   let from = process.env.TWILIO_PHONE_NUMBER || "";
+
+  if (channel === Channel.WHATSAPP) {
+    const whatsappPhoneNumber =
+      process.env.TWILIO_WHATSAPP_NUMBER ||
+      process.env.TWILIO_PHONE_NUMBER ||
+      "";
+    from = `whatsapp:${whatsappPhoneNumber.replace(/^whatsapp:/, "")}`;
+  }
+
+  if (isScheduled) {
+    const message = await prisma.message.create({
+      data: {
+        threadId,
+        userId: session.user.id,
+        channel: channel as any,
+        direction: MessageDirection.OUTBOUND as any,
+        status: MessageStatus.SCHEDULED as any,
+        content,
+        from,
+        to,
+        scheduledAt: scheduledDate,
+      },
+      include: {
+        thread: {
+          include: {
+            contact: true,
+          },
+        },
+      },
+    });
+
+    await prisma.thread.update({
+      where: { id: threadId },
+      data: {
+        lastActivity: new Date(),
+      },
+    });
+
+    return Response.json({ message });
+  }
+
+  let twilioResult;
 
   try {
     if (channel === Channel.SMS) {
       twilioResult = await sendSMS(to, content);
     } else if (channel === Channel.WHATSAPP) {
-      const whatsappPhoneNumber =
-        process.env.TWILIO_WHATSAPP_NUMBER ||
-        process.env.TWILIO_PHONE_NUMBER ||
-        "";
       twilioResult = await sendWhatsApp(to, content);
-      from = `whatsapp:${whatsappPhoneNumber.replace(/^whatsapp:/, "")}`;
     } else {
       return Response.json({ error: "Unsupported channel" }, { status: 400 });
     }
