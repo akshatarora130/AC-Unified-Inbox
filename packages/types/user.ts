@@ -1,3 +1,9 @@
+export enum UserRole {
+  ADMIN = "ADMIN",
+  EDITOR = "EDITOR",
+  VIEWER = "VIEWER",
+}
+
 export interface User {
   id: string;
   firstName: string;
@@ -5,6 +11,7 @@ export interface User {
   email: string;
   image?: string | null;
   emailVerified: boolean;
+  role: UserRole;
   createdAt?: Date;
   updatedAt?: Date;
 }

@@ -12,6 +12,10 @@ export const auth = betterAuth({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       disableSignUp: true,
+      scope: ["openid", "profile", "email"],
+      additionalParams: {
+        prompt: "select_account",
+      },
     },
   },
   plugins: [nextCookies()],
@@ -27,6 +31,10 @@ export const auth = betterAuth({
       lastName: {
         type: "string",
         required: true,
+      },
+      role: {
+        type: "string",
+        required: false,
       },
     },
   },
