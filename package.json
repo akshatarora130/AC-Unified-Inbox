@@ -7,7 +7,11 @@
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md,mdx}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md,mdx}\""
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md,mdx}\"",
+    "prisma-migrate": "bunx prisma migrate dev --schema=packages/database/prisma/schema.prisma",
+    "prisma-studio": "bunx prisma studio --schema=packages/database/prisma/schema.prisma",
+    "prisma-generate": "bunx prisma generate --schema=packages/database/prisma/schema.prisma",
+    "db-push": "bunx prisma db push --schema=packages/database/prisma/schema.prisma"
   },
   "devDependencies": {
     "prettier": "^3.6.0",
