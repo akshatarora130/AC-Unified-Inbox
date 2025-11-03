@@ -284,7 +284,9 @@ export default function AnalyticsPage() {
         ) : !analyticsData ? (
           <div className="rounded-lg bg-white p-8 text-center shadow-sm ring-1 ring-gray-100">
             <BarChart3 className="mx-auto h-12 w-12 text-gray-400" />
-            <p className="mt-4 text-sm text-gray-500">No analytics data available</p>
+            <p className="mt-4 text-sm text-gray-500">
+              No analytics data available
+            </p>
           </div>
         ) : (
           <>
@@ -411,9 +413,7 @@ export default function AnalyticsPage() {
                       cx="50%"
                       cy="50%"
                       outerRadius={80}
-                      label={({ channel, count }) =>
-                        `${channel}: ${count}`
-                      }
+                      label={({ channel, count }) => `${channel}: ${count}`}
                     >
                       {analyticsData.charts.channelDistribution.map(
                         (entry, index) => (
@@ -458,9 +458,7 @@ export default function AnalyticsPage() {
                   Response Time Trends
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
-                  <LineChart
-                    data={analyticsData.charts.responseTimeOverTime}
-                  >
+                  <LineChart data={analyticsData.charts.responseTimeOverTime}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
                       dataKey="date"
@@ -476,7 +474,10 @@ export default function AnalyticsPage() {
                       labelFormatter={(value) =>
                         new Date(value).toLocaleDateString()
                       }
-                      formatter={(value: number) => [`${value} min`, "Avg Response Time"]}
+                      formatter={(value: number) => [
+                        `${value} min`,
+                        "Avg Response Time",
+                      ]}
                     />
                     <Legend />
                     <Line
@@ -510,12 +511,14 @@ export default function AnalyticsPage() {
                     <Tooltip />
                     <Legend />
                     <Bar dataKey="count" fill="#3B82F6" name="Responses">
-                      {analyticsData.charts.responsesByUser.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={CHANNEL_COLORS.SMS}
-                        />
-                      ))}
+                      {analyticsData.charts.responsesByUser.map(
+                        (entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={CHANNEL_COLORS.SMS}
+                          />
+                        )
+                      )}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
@@ -565,12 +568,14 @@ export default function AnalyticsPage() {
                     <Tooltip />
                     <Legend />
                     <Bar dataKey="count" fill="#10B981" name="Messages">
-                      {analyticsData.charts.messagesByUser.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={CHANNEL_COLORS.WHATSAPP}
-                        />
-                      ))}
+                      {analyticsData.charts.messagesByUser.map(
+                        (entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={CHANNEL_COLORS.WHATSAPP}
+                          />
+                        )
+                      )}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
@@ -582,4 +587,3 @@ export default function AnalyticsPage() {
     </div>
   );
 }
-

@@ -93,7 +93,8 @@ export async function GET(req: NextRequest) {
 
     threads.forEach((threadMessages) => {
       const sorted = threadMessages.sort(
-        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       );
 
       for (let i = 0; i < sorted.length - 1; i++) {
@@ -118,10 +119,13 @@ export async function GET(req: NextRequest) {
         ? responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length
         : 0;
 
-    const channelDistribution = messages.reduce((acc, msg) => {
-      acc[msg.channel] = (acc[msg.channel] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const channelDistribution = messages.reduce(
+      (acc, msg) => {
+        acc[msg.channel] = (acc[msg.channel] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     const channelDistributionWithDirection = messages.reduce(
       (acc, msg) => {
@@ -132,84 +136,109 @@ export async function GET(req: NextRequest) {
       {} as Record<string, number>
     );
 
-    const statusBreakdown = messages.reduce((acc, msg) => {
-      acc[msg.status] = (acc[msg.status] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const statusBreakdown = messages.reduce(
+      (acc, msg) => {
+        acc[msg.status] = (acc[msg.status] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
-    const responsesByUser = outboundMessages.reduce((acc, msg) => {
-      if (msg.userId && msg.user) {
-        const userId = msg.userId;
-        if (!acc[userId]) {
-          acc[userId] = {
-            userId,
-            userName: `${msg.user.firstName} ${msg.user.lastName}`,
-            email: msg.user.email,
-            count: 0,
-          };
+    const responsesByUser = outboundMessages.reduce(
+      (acc, msg) => {
+        if (msg.userId && msg.user) {
+          const userId = msg.userId;
+          if (!acc[userId]) {
+            acc[userId] = {
+              userId,
+              userName: `${msg.user.firstName} ${msg.user.lastName}`,
+              email: msg.user.email,
+              count: 0,
+            };
+          }
+          acc[userId].count += 1;
         }
-        acc[userId].count += 1;
-      }
-      return acc;
-    }, {} as Record<string, { userId: string; userName: string; email: string; count: number }>);
+        return acc;
+      },
+      {} as Record<
+        string,
+        { userId: string; userName: string; email: string; count: number }
+      >
+    );
 
-    const messagesByUser = messages.reduce((acc, msg) => {
-      if (msg.userId && msg.user) {
-        const userId = msg.userId;
-        if (!acc[userId]) {
-          acc[userId] = {
-            userId,
-            userName: `${msg.user.firstName} ${msg.user.lastName}`,
-            email: msg.user.email,
-            count: 0,
-          };
+    const messagesByUser = messages.reduce(
+      (acc, msg) => {
+        if (msg.userId && msg.user) {
+          const userId = msg.userId;
+          if (!acc[userId]) {
+            acc[userId] = {
+              userId,
+              userName: `${msg.user.firstName} ${msg.user.lastName}`,
+              email: msg.user.email,
+              count: 0,
+            };
+          }
+          acc[userId].count += 1;
         }
-        acc[userId].count += 1;
-      }
-      return acc;
-    }, {} as Record<string, { userId: string; userName: string; email: string; count: number }>);
+        return acc;
+      },
+      {} as Record<
+        string,
+        { userId: string; userName: string; email: string; count: number }
+      >
+    );
 
-    const volumeOverTime = messages.reduce((acc, msg) => {
-      const date = new Date(msg.createdAt);
-      const dayKey = date.toISOString().split("T")[0];
-      if (!acc[dayKey]) {
-        acc[dayKey] = { date: dayKey, count: 0 };
-      }
-      acc[dayKey].count += 1;
-      return acc;
-    }, {} as Record<string, { date: string; count: number }>);
-
-    const responseTimeOverTime = messages.reduce((acc, msg, idx) => {
-      if (idx === 0) return acc;
-      const prev = messages[idx - 1];
-      
-      if (prev.threadId === msg.threadId &&
-        prev.direction === MessageDirection.INBOUND &&
-        msg.direction === MessageDirection.OUTBOUND &&
-        msg.userId
-      ) {
+    const volumeOverTime = messages.reduce(
+      (acc, msg) => {
         const date = new Date(msg.createdAt);
         const dayKey = date.toISOString().split("T")[0];
         if (!acc[dayKey]) {
-          acc[dayKey] = { date: dayKey, times: [] };
+          acc[dayKey] = { date: dayKey, count: 0 };
         }
-        const prevTime = new Date(prev.createdAt).getTime();
-        const msgTime = new Date(msg.createdAt).getTime();
-        const responseTime = (msgTime - prevTime) / (1000 * 60);
-        acc[dayKey].times.push(responseTime);
-      }
-      return acc;
-    }, {} as Record<string, { date: string; times: number[] }>);
+        acc[dayKey].count += 1;
+        return acc;
+      },
+      {} as Record<string, { date: string; count: number }>
+    );
 
-    const hourlyActivity = messages.reduce((acc, msg) => {
-      const date = new Date(msg.createdAt);
-      const hour = date.getHours();
-      acc[hour] = (acc[hour] || 0) + 1;
-      return acc;
-    }, {} as Record<number, number>);
+    const responseTimeOverTime = messages.reduce(
+      (acc, msg, idx) => {
+        if (idx === 0) return acc;
+        const prev = messages[idx - 1];
 
-    const volumeOverTimeArray = Object.values(volumeOverTime).sort(
-      (a, b) => a.date.localeCompare(b.date)
+        if (
+          prev.threadId === msg.threadId &&
+          prev.direction === MessageDirection.INBOUND &&
+          msg.direction === MessageDirection.OUTBOUND &&
+          msg.userId
+        ) {
+          const date = new Date(msg.createdAt);
+          const dayKey = date.toISOString().split("T")[0];
+          if (!acc[dayKey]) {
+            acc[dayKey] = { date: dayKey, times: [] };
+          }
+          const prevTime = new Date(prev.createdAt).getTime();
+          const msgTime = new Date(msg.createdAt).getTime();
+          const responseTime = (msgTime - prevTime) / (1000 * 60);
+          acc[dayKey].times.push(responseTime);
+        }
+        return acc;
+      },
+      {} as Record<string, { date: string; times: number[] }>
+    );
+
+    const hourlyActivity = messages.reduce(
+      (acc, msg) => {
+        const date = new Date(msg.createdAt);
+        const hour = date.getHours();
+        acc[hour] = (acc[hour] || 0) + 1;
+        return acc;
+      },
+      {} as Record<number, number>
+    );
+
+    const volumeOverTimeArray = Object.values(volumeOverTime).sort((a, b) =>
+      a.date.localeCompare(b.date)
     );
 
     const responseTimeOverTimeArray = Object.entries(responseTimeOverTime)
@@ -272,4 +301,3 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-
