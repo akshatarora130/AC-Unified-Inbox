@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { LogOut, Mail, Shield, Inbox } from "lucide-react";
+import { LogOut, Mail, Shield, Inbox, BarChart3 } from "lucide-react";
 import { User, UserRole } from "@repo/types";
 
 interface HeaderProps {
@@ -55,6 +55,13 @@ export default function Header({
           >
             <Inbox className="h-4 w-4" />
             <span>Inbox</span>
+          </button>
+          <button
+            onClick={() => router.push("/analytics")}
+            className="flex items-center space-x-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-400 hover:bg-gray-50"
+          >
+            <BarChart3 className="h-4 w-4" />
+            <span>Analytics</span>
           </button>
           {showAdminButton && user.role === UserRole.ADMIN && (
             <button
