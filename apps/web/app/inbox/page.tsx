@@ -165,20 +165,20 @@ export default function InboxPage() {
 
   const getChannelBadge = (channel: Channel) => {
     const badges = {
-      [Channel.SMS]: { bg: "bg-blue-100", text: "text-blue-700", label: "SMS" },
+      [Channel.SMS]: { bg: "bg-white/20", text: "text-white", label: "SMS" },
       [Channel.WHATSAPP]: {
-        bg: "bg-green-100",
-        text: "text-green-700",
+        bg: "bg-white/20",
+        text: "text-white",
         label: "WhatsApp",
       },
       [Channel.EMAIL]: {
-        bg: "bg-purple-100",
-        text: "text-purple-700",
+        bg: "bg-white/20",
+        text: "text-white",
         label: "Email",
       },
       [Channel.TWITTER]: {
-        bg: "bg-sky-100",
-        text: "text-sky-700",
+        bg: "bg-white/20",
+        text: "text-white",
         label: "Twitter",
       },
     };
@@ -195,8 +195,8 @@ export default function InboxPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-700" />
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <Loader2 className="h-8 w-8 animate-spin text-white" />
       </div>
     );
   }
@@ -258,7 +258,7 @@ export default function InboxPage() {
   };
 
   return (
-    <div className="flex h-screen flex-col bg-gray-50">
+    <div className="flex h-screen flex-col bg-black">
       <Header
         user={user}
         title="Unified Inbox"
@@ -267,7 +267,7 @@ export default function InboxPage() {
         showAdminButton={true}
       />
 
-      <div className="border-b border-gray-200 bg-white px-6 py-4">
+      <div className="border-b border-white/20 bg-white/5 px-6 py-4">
         <div className="flex items-center space-x-4">
           <div className="relative max-w-md flex-1">
             <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -276,11 +276,11 @@ export default function InboxPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search conversations..."
-              className="w-full rounded-lg border border-gray-300 bg-white py-2 pr-4 pl-10 text-sm focus:border-gray-900 focus:ring-gray-900 focus:outline-none"
+              className="w-full rounded-lg border border-white/20 bg-white/10 py-2 pr-4 pl-10 text-sm text-white placeholder:text-gray-400 focus:border-white focus:ring-white/50 focus:outline-none"
             />
           </div>
           <div className="flex items-center space-x-2">
-            <label className="text-xs font-medium text-gray-700">
+            <label className="text-xs font-medium text-gray-300">
               Channel:
             </label>
             <select
@@ -288,7 +288,7 @@ export default function InboxPage() {
               onChange={(e) =>
                 setFilterChannel(e.target.value as FilterChannel)
               }
-              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-gray-900 focus:ring-gray-900 focus:outline-none"
+              className="rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white focus:border-white focus:ring-white/50 focus:outline-none"
             >
               <option value="all">All Channels</option>
               <option value={Channel.SMS}>SMS</option>
@@ -303,7 +303,7 @@ export default function InboxPage() {
       <div className="flex flex-1 overflow-hidden">
         {isLoadingThreads ? (
           <div className="flex flex-1 items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+            <Loader2 className="h-8 w-8 animate-spin text-white" />
           </div>
         ) : (
           <div className="flex flex-1 items-start justify-center gap-6 overflow-x-auto px-6 pt-4 pb-4">
@@ -314,28 +314,28 @@ export default function InboxPage() {
                   key={column.id}
                   className="flex h-full max-w-[420px] min-w-[380px] flex-1 flex-col"
                 >
-                  <div className="mb-2 rounded-t-lg bg-gray-100 px-4 py-3">
+                  <div className="mb-2 rounded-t-lg bg-white/5 px-4 py-3 ring-1 ring-white/20">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <h3 className="font-semibold text-gray-700">
+                        <h3 className="font-semibold text-white">
                           {column.title.toUpperCase()}
                         </h3>
-                        <span className="rounded-full bg-gray-300 px-2 py-0.5 text-xs font-semibold text-gray-700">
+                        <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs font-semibold text-white">
                           {columnThreads.length}
                         </span>
                       </div>
                     </div>
                   </div>
-                  <div className="flex-1 space-y-3 overflow-y-auto rounded-b-lg bg-gray-50 px-3 pt-3 pb-4">
+                  <div className="flex-1 space-y-3 overflow-y-auto rounded-b-lg bg-white/5/50 px-3 pt-3 pb-4">
                     {columnThreads.length === 0 ? (
                       <div className="py-12 text-center">
-                        <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-gray-200">
+                        <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-white/10">
                           <MessageSquare className="h-6 w-6 text-gray-400" />
                         </div>
-                        <p className="text-sm font-medium text-gray-500">
+                        <p className="text-sm font-medium text-gray-400">
                           No conversations
                         </p>
-                        <p className="mt-1 text-xs text-gray-400">
+                        <p className="mt-1 text-xs text-gray-500">
                           {column.id === "unread"
                             ? "All conversations are read"
                             : column.id === "read"
@@ -360,20 +360,20 @@ export default function InboxPage() {
                                 "_blank"
                               );
                             }}
-                            className="group cursor-pointer rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all hover:border-gray-300 hover:shadow-md"
+                            className="group cursor-pointer rounded-lg border border-white/20 bg-white/5 p-4 shadow-sm transition-all hover:border-white/30 hover:bg-white/10"
                           >
                             <div className="mb-2 flex items-start justify-between">
                               <div className="flex min-w-0 flex-1 items-start space-x-3">
-                                <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-blue-600">
-                                  <Phone className="h-4 w-4 text-white" />
+                                <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 border-white bg-white">
+                                  <Phone className="h-4 w-4 text-black" />
                                 </div>
                                 <div className="min-w-0 flex-1">
                                   <div className="mb-2 flex items-center justify-between">
-                                    <p className="truncate text-sm font-semibold text-gray-900">
+                                    <p className="truncate text-sm font-semibold text-white">
                                       {getContactName(thread.contact)}
                                     </p>
                                     {thread.unreadCount > 0 && (
-                                      <span className="ml-2 flex-shrink-0 rounded-full bg-blue-600 px-2 py-0.5 text-xs font-semibold text-white">
+                                      <span className="ml-2 flex-shrink-0 rounded-full border-2 border-white bg-white px-2 py-0.5 text-xs font-semibold text-black">
                                         {thread.unreadCount}
                                       </span>
                                     )}
@@ -383,17 +383,17 @@ export default function InboxPage() {
                                       <div className="mb-2 flex items-center space-x-2">
                                         {getChannelBadge(lastMessage.channel)}
                                         {lastMessage.status === "SCHEDULED" && (
-                                          <span className="flex items-center space-x-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-700">
+                                          <span className="flex items-center space-x-1 rounded-full bg-white/20 px-2 py-0.5 text-xs font-medium text-white">
                                             <Clock className="h-3 w-3" />
                                             <span>Scheduled</span>
                                           </span>
                                         )}
                                       </div>
-                                      <p className="mb-2 line-clamp-2 text-sm text-gray-600">
+                                      <p className="mb-2 line-clamp-2 text-sm text-gray-300">
                                         {lastMessage.content}
                                       </p>
                                       {lastMessage.scheduledAt && (
-                                        <p className="mb-2 text-xs text-orange-600">
+                                        <p className="mb-2 text-xs text-white">
                                           Scheduled:{" "}
                                           {new Date(
                                             lastMessage.scheduledAt

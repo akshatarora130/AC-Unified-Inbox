@@ -227,8 +227,8 @@ export default function AnalyticsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-700" />
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <Loader2 className="h-8 w-8 animate-spin text-white" />
       </div>
     );
   }
@@ -238,7 +238,7 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-black">
       <Header
         user={user}
         title="Analytics Dashboard"
@@ -250,8 +250,8 @@ export default function AnalyticsPage() {
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Analytics</h2>
-            <p className="text-sm text-gray-500">
+            <h2 className="text-2xl font-bold text-white">Analytics</h2>
+            <p className="text-sm text-gray-400">
               Monitor your communication performance
             </p>
           </div>
@@ -259,7 +259,7 @@ export default function AnalyticsPage() {
             <select
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value)}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm focus:border-gray-900 focus:ring-gray-900 focus:outline-none"
+              className="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white shadow-sm focus:border-white focus:ring-white/50 focus:outline-none"
             >
               <option value="7">Last 7 days</option>
               <option value="30">Last 30 days</option>
@@ -269,7 +269,7 @@ export default function AnalyticsPage() {
             <button
               onClick={exportToCSV}
               disabled={!analyticsData}
-              className="flex items-center space-x-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-400 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex items-center space-x-2 rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:border-slate-500 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Download className="h-4 w-4" />
               <span>Export CSV</span>
@@ -279,86 +279,86 @@ export default function AnalyticsPage() {
 
         {isLoadingData ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+            <Loader2 className="h-8 w-8 animate-spin text-white" />
           </div>
         ) : !analyticsData ? (
-          <div className="rounded-lg bg-white p-8 text-center shadow-sm ring-1 ring-gray-100">
+          <div className="rounded-lg bg-white/5 p-8 text-center shadow-sm ring-1 ring-white/20">
             <BarChart3 className="mx-auto h-12 w-12 text-gray-400" />
-            <p className="mt-4 text-sm text-gray-500">
+            <p className="mt-4 text-sm text-gray-400">
               No analytics data available
             </p>
           </div>
         ) : (
           <>
             <div className="mb-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
+              <div className="rounded-xl bg-white/5 p-6 shadow-sm ring-1 ring-white/20">
                 <div className="mb-2 flex items-center justify-between">
-                  <div className="rounded-lg bg-blue-100 p-2">
-                    <MessageSquare className="h-5 w-5 text-blue-600" />
+                  <div className="rounded-lg bg-white/20 p-2">
+                    <MessageSquare className="h-5 w-5 text-white" />
                   </div>
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-sm font-medium text-gray-300">
                     Total Messages
                   </span>
                 </div>
                 <div className="mt-4">
-                  <p className="text-3xl font-bold text-gray-900">
+                  <p className="text-3xl font-bold text-white">
                     {analyticsData.overview.totalMessages}
                   </p>
-                  <p className="mt-1 text-xs text-gray-500">
+                  <p className="mt-1 text-xs text-gray-400">
                     {analyticsData.overview.inboundCount} inbound,{" "}
                     {analyticsData.overview.outboundCount} outbound
                   </p>
                 </div>
               </div>
 
-              <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
+              <div className="rounded-xl bg-white/5 p-6 shadow-sm ring-1 ring-white/20">
                 <div className="mb-2 flex items-center justify-between">
-                  <div className="rounded-lg bg-green-100 p-2">
-                    <Users className="h-5 w-5 text-green-600" />
+                  <div className="rounded-lg bg-white/20 p-2">
+                    <Users className="h-5 w-5 text-white" />
                   </div>
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-sm font-medium text-gray-300">
                     Conversations
                   </span>
                 </div>
                 <div className="mt-4">
-                  <p className="text-3xl font-bold text-gray-900">
+                  <p className="text-3xl font-bold text-white">
                     {analyticsData.overview.totalConversations}
                   </p>
-                  <p className="mt-1 text-xs text-gray-500">Active threads</p>
+                  <p className="mt-1 text-xs text-gray-400">Active threads</p>
                 </div>
               </div>
 
-              <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
+              <div className="rounded-xl bg-white/5 p-6 shadow-sm ring-1 ring-white/20">
                 <div className="mb-2 flex items-center justify-between">
-                  <div className="rounded-lg bg-purple-100 p-2">
-                    <Clock className="h-5 w-5 text-purple-600" />
+                  <div className="rounded-lg bg-white/20 p-2">
+                    <Clock className="h-5 w-5 text-white" />
                   </div>
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-sm font-medium text-gray-300">
                     Avg Response Time
                   </span>
                 </div>
                 <div className="mt-4">
-                  <p className="text-3xl font-bold text-gray-900">
+                  <p className="text-3xl font-bold text-white">
                     {analyticsData.overview.averageResponseTime}
                   </p>
-                  <p className="mt-1 text-xs text-gray-500">minutes</p>
+                  <p className="mt-1 text-xs text-gray-400">minutes</p>
                 </div>
               </div>
 
-              <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
+              <div className="rounded-xl bg-white/5 p-6 shadow-sm ring-1 ring-white/20">
                 <div className="mb-2 flex items-center justify-between">
-                  <div className="rounded-lg bg-orange-100 p-2">
-                    <TrendingUp className="h-5 w-5 text-orange-600" />
+                  <div className="rounded-lg bg-white/20 p-2">
+                    <TrendingUp className="h-5 w-5 text-white" />
                   </div>
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-sm font-medium text-gray-300">
                     Success Rate
                   </span>
                 </div>
                 <div className="mt-4">
-                  <p className="text-3xl font-bold text-gray-900">
+                  <p className="text-3xl font-bold text-white">
                     {analyticsData.overview.successRate}%
                   </p>
-                  <p className="mt-1 text-xs text-gray-500">
+                  <p className="mt-1 text-xs text-gray-400">
                     Messages delivered
                   </p>
                 </div>
@@ -366,15 +366,16 @@ export default function AnalyticsPage() {
             </div>
 
             <div className="mb-6 grid gap-6 lg:grid-cols-2">
-              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-100">
-                <h3 className="mb-4 text-lg font-semibold text-gray-900">
+              <div className="rounded-lg bg-white/5 p-6 shadow-sm ring-1 ring-white/20">
+                <h3 className="mb-4 text-lg font-semibold text-white">
                   Message Volume Over Time
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={analyticsData.charts.volumeOverTime}>
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" />
                     <XAxis
                       dataKey="date"
+                      tick={{ fill: "#ffffff", fontSize: 12 }}
                       tickFormatter={(value) =>
                         new Date(value).toLocaleDateString("en-US", {
                           month: "short",
@@ -382,13 +383,19 @@ export default function AnalyticsPage() {
                         })
                       }
                     />
-                    <YAxis />
+                    <YAxis tick={{ fill: "#ffffff", fontSize: 12 }} />
                     <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#000000",
+                        border: "1px solid #ffffff",
+                        borderRadius: "8px",
+                        color: "#ffffff",
+                      }}
                       labelFormatter={(value) =>
                         new Date(value).toLocaleDateString()
                       }
                     />
-                    <Legend />
+                    <Legend wrapperStyle={{ color: "#ffffff" }} />
                     <Line
                       type="monotone"
                       dataKey="count"
@@ -400,8 +407,8 @@ export default function AnalyticsPage() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-100">
-                <h3 className="mb-4 text-lg font-semibold text-gray-900">
+              <div className="rounded-lg bg-white/5 p-6 shadow-sm ring-1 ring-white/20">
+                <h3 className="mb-4 text-lg font-semibold text-white">
                   Channel Distribution
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
@@ -424,23 +431,40 @@ export default function AnalyticsPage() {
                         )
                       )}
                     </Pie>
-                    <Tooltip />
-                    <Legend />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#000000",
+                        border: "1px solid #ffffff",
+                        borderRadius: "8px",
+                        color: "#ffffff",
+                      }}
+                    />
+                    <Legend wrapperStyle={{ color: "#ffffff" }} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
 
-              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-100">
-                <h3 className="mb-4 text-lg font-semibold text-gray-900">
+              <div className="rounded-lg bg-white/5 p-6 shadow-sm ring-1 ring-white/20">
+                <h3 className="mb-4 text-lg font-semibold text-white">
                   Message Status Breakdown
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={analyticsData.charts.statusBreakdown}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="status" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" />
+                    <XAxis
+                      dataKey="status"
+                      tick={{ fill: "#ffffff", fontSize: 12 }}
+                    />
+                    <YAxis tick={{ fill: "#ffffff", fontSize: 12 }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#000000",
+                        border: "1px solid #ffffff",
+                        borderRadius: "8px",
+                        color: "#ffffff",
+                      }}
+                    />
+                    <Legend wrapperStyle={{ color: "#ffffff" }} />
                     <Bar dataKey="count" fill="#3B82F6" name="Count">
                       {analyticsData.charts.statusBreakdown.map((entry) => (
                         <Cell
@@ -453,8 +477,8 @@ export default function AnalyticsPage() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-100">
-                <h3 className="mb-4 text-lg font-semibold text-gray-900">
+              <div className="rounded-lg bg-white/5 p-6 shadow-sm ring-1 ring-white/20">
+                <h3 className="mb-4 text-lg font-semibold text-white">
                   Response Time Trends
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
@@ -491,8 +515,8 @@ export default function AnalyticsPage() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-100">
-                <h3 className="mb-4 text-lg font-semibold text-gray-900">
+              <div className="rounded-lg bg-white/5 p-6 shadow-sm ring-1 ring-white/20">
+                <h3 className="mb-4 text-lg font-semibold text-white">
                   Responses by User
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
@@ -500,16 +524,26 @@ export default function AnalyticsPage() {
                     data={analyticsData.charts.responsesByUser}
                     layout="vertical"
                   >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="number" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" />
+                    <XAxis
+                      type="number"
+                      tick={{ fill: "#ffffff", fontSize: 12 }}
+                    />
                     <YAxis
                       dataKey="userName"
                       type="category"
                       width={120}
-                      tick={{ fontSize: 12 }}
+                      tick={{ fill: "#ffffff", fontSize: 12 }}
                     />
-                    <Tooltip />
-                    <Legend />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#000000",
+                        border: "1px solid #ffffff",
+                        borderRadius: "8px",
+                        color: "#ffffff",
+                      }}
+                    />
+                    <Legend wrapperStyle={{ color: "#ffffff" }} />
                     <Bar dataKey="count" fill="#3B82F6" name="Responses">
                       {analyticsData.charts.responsesByUser.map(
                         (entry, index) => (
@@ -524,23 +558,30 @@ export default function AnalyticsPage() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-100">
-                <h3 className="mb-4 text-lg font-semibold text-gray-900">
+              <div className="rounded-lg bg-white/5 p-6 shadow-sm ring-1 ring-white/20">
+                <h3 className="mb-4 text-lg font-semibold text-white">
                   Hourly Activity Pattern
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={analyticsData.charts.hourlyActivity}>
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" />
                     <XAxis
                       dataKey="hour"
+                      tick={{ fill: "#ffffff", fontSize: 12 }}
                       tickFormatter={(value) => `${value}:00`}
                     />
-                    <YAxis />
+                    <YAxis tick={{ fill: "#ffffff", fontSize: 12 }} />
                     <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#000000",
+                        border: "1px solid #ffffff",
+                        borderRadius: "8px",
+                        color: "#ffffff",
+                      }}
                       formatter={(value: number) => [value, "Messages"]}
                       labelFormatter={(label) => `Hour: ${label}:00`}
                     />
-                    <Legend />
+                    <Legend wrapperStyle={{ color: "#ffffff" }} />
                     <Bar dataKey="count" fill="#8B5CF6" name="Messages" />
                   </BarChart>
                 </ResponsiveContainer>
@@ -548,8 +589,8 @@ export default function AnalyticsPage() {
             </div>
 
             {analyticsData.charts.messagesByUser.length > 0 && (
-              <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-100">
-                <h3 className="mb-4 text-lg font-semibold text-gray-900">
+              <div className="rounded-lg bg-white/5 p-6 shadow-sm ring-1 ring-white/20">
+                <h3 className="mb-4 text-lg font-semibold text-white">
                   Messages by User (All Messages)
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
@@ -557,16 +598,26 @@ export default function AnalyticsPage() {
                     data={analyticsData.charts.messagesByUser}
                     layout="vertical"
                   >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="number" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" />
+                    <XAxis
+                      type="number"
+                      tick={{ fill: "#ffffff", fontSize: 12 }}
+                    />
                     <YAxis
                       dataKey="userName"
                       type="category"
                       width={120}
-                      tick={{ fontSize: 12 }}
+                      tick={{ fill: "#ffffff", fontSize: 12 }}
                     />
-                    <Tooltip />
-                    <Legend />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#000000",
+                        border: "1px solid #ffffff",
+                        borderRadius: "8px",
+                        color: "#ffffff",
+                      }}
+                    />
+                    <Legend wrapperStyle={{ color: "#ffffff" }} />
                     <Bar dataKey="count" fill="#10B981" name="Messages">
                       {analyticsData.charts.messagesByUser.map(
                         (entry, index) => (

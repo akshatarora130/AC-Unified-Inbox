@@ -146,18 +146,18 @@ export default function AdminPage() {
   const getRoleBadgeColor = (role: UserRole) => {
     switch (role) {
       case UserRole.ADMIN:
-        return "bg-purple-100 text-purple-700";
+        return "bg-white/20 text-white";
       case UserRole.EDITOR:
-        return "bg-blue-100 text-blue-700";
+        return "bg-white/20 text-white";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-white/10 text-gray-300";
     }
   };
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-700" />
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
       </div>
     );
   }
@@ -167,7 +167,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-black">
       <Header
         user={user}
         title="Admin Panel"
@@ -178,10 +178,10 @@ export default function AdminPage() {
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-gray-900">User Management</h2>
+          <h2 className="text-2xl font-bold text-white">User Management</h2>
           <button
             onClick={() => setShowAddUser(true)}
-            className="flex items-center space-x-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-gray-800"
+            className="flex items-center space-x-2 rounded-lg border-2 border-white bg-white text-black hover:bg-black hover:text-white px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:opacity-90"
           >
             <Plus className="h-4 w-4" />
             <span>Add User</span>
@@ -189,21 +189,21 @@ export default function AdminPage() {
         </div>
 
         {showAddUser && (
-          <div className="mb-6 rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
+          <div className="mb-6 rounded-xl bg-white/5 p-6 shadow-sm ring-1 ring-white/20">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-white">
                 Add New User
               </h3>
               <button
                 onClick={() => setShowAddUser(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-white"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-300">
                   Email
                 </label>
                 <input
@@ -212,11 +212,11 @@ export default function AdminPage() {
                   onChange={(e) =>
                     setNewUser({ ...newUser, email: e.target.value })
                   }
-                  className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-900 focus:ring-gray-900 focus:outline-none"
+                  className="mt-1 block w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white shadow-sm focus:border-white focus:ring-white/50 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-300">
                   First Name
                 </label>
                 <input
@@ -225,11 +225,11 @@ export default function AdminPage() {
                   onChange={(e) =>
                     setNewUser({ ...newUser, firstName: e.target.value })
                   }
-                  className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-900 focus:ring-gray-900 focus:outline-none"
+                  className="mt-1 block w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white shadow-sm focus:border-white focus:ring-white/50 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-300">
                   Last Name
                 </label>
                 <input
@@ -238,11 +238,11 @@ export default function AdminPage() {
                   onChange={(e) =>
                     setNewUser({ ...newUser, lastName: e.target.value })
                   }
-                  className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-900 focus:ring-gray-900 focus:outline-none"
+                  className="mt-1 block w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white shadow-sm focus:border-white focus:ring-white/50 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-300">
                   Role
                 </label>
                 <select
@@ -253,7 +253,7 @@ export default function AdminPage() {
                       role: e.target.value as UserRole,
                     })
                   }
-                  className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-gray-900 focus:ring-gray-900 focus:outline-none"
+                  className="mt-1 block w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-white shadow-sm focus:border-white focus:ring-white/50 focus:outline-none"
                 >
                   <option value={UserRole.VIEWER}>Viewer</option>
                   <option value={UserRole.EDITOR}>Editor</option>
@@ -264,7 +264,7 @@ export default function AdminPage() {
             <div className="mt-4 flex justify-end">
               <button
                 onClick={handleAddUser}
-                className="flex items-center space-x-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-gray-800"
+                className="flex items-center space-x-2 rounded-lg border-2 border-white bg-white text-black hover:bg-black hover:text-white px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:opacity-90"
               >
                 <Save className="h-4 w-4" />
                 <span>Save User</span>
@@ -273,57 +273,57 @@ export default function AdminPage() {
           </div>
         )}
 
-        <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-100">
-          <div className="border-b border-gray-200 px-6 py-4">
-            <h3 className="text-lg font-semibold text-gray-900">All Users</h3>
+        <div className="rounded-xl bg-white/5 shadow-sm ring-1 ring-white/20">
+          <div className="border-b border-white/20 px-6 py-4">
+            <h3 className="text-lg font-semibold text-white">All Users</h3>
           </div>
           {isLoadingUsers ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+              <Loader2 className="h-6 w-6 animate-spin text-blue-400" />
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-white/10/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-300 uppercase">
                       Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-300 uppercase">
                       Email
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-300 uppercase">
                       Role
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-300 uppercase">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
+                <tbody className="divide-y divide-slate-700 bg-white/5">
                   {users.map((u) => (
-                    <tr key={u.id}>
+                    <tr key={u.id} className="hover:bg-white/10/50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           {u.image ? (
                             <img
                               src={u.image}
                               alt={`${u.firstName} ${u.lastName}`}
-                              className="h-10 w-10 rounded-full"
+                              className="h-10 w-10 rounded-full ring-2 ring-slate-600"
                             />
                           ) : (
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
-                              <Users className="h-5 w-5 text-gray-600" />
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
+                              <Users className="h-5 w-5 text-gray-400" />
                             </div>
                           )}
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-medium text-white">
                               {u.firstName} {u.lastName}
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-700">
+                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-300">
                         {u.email}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -333,7 +333,7 @@ export default function AdminPage() {
                             onChange={(e) =>
                               setEditRole(e.target.value as UserRole)
                             }
-                            className="rounded-lg border border-gray-300 px-2 py-1 text-sm focus:border-gray-900 focus:ring-gray-900 focus:outline-none"
+                            className="rounded-lg border border-white/20 bg-white/10 px-2 py-1 text-sm text-white focus:border-white focus:ring-white/50 focus:outline-none"
                           >
                             <option value={UserRole.VIEWER}>Viewer</option>
                             <option value={UserRole.EDITOR}>Editor</option>
@@ -354,13 +354,13 @@ export default function AdminPage() {
                           <div className="flex items-center space-x-2">
                             <button
                               onClick={() => handleEditRole(u.id)}
-                              className="text-green-600 hover:text-green-800"
+                              className="text-green-400 hover:text-green-300"
                             >
                               <Save className="h-4 w-4" />
                             </button>
                             <button
                               onClick={() => setEditingUserId(null)}
-                              className="text-gray-600 hover:text-gray-800"
+                              className="text-gray-400 hover:text-white"
                             >
                               <X className="h-4 w-4" />
                             </button>
@@ -371,7 +371,7 @@ export default function AdminPage() {
                               setEditingUserId(u.id);
                               setEditRole(u.role);
                             }}
-                            className="text-gray-600 hover:text-gray-800"
+                            className="text-gray-400 hover:text-white"
                           >
                             <Edit className="h-4 w-4" />
                           </button>

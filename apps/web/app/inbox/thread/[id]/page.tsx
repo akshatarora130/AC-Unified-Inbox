@@ -493,7 +493,7 @@ export default function ThreadDetailPage() {
         parts.push(
           <span
             key={key++}
-            className="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 text-sm font-medium text-blue-700 ring-1 ring-blue-600/20 ring-inset"
+            className="inline-flex items-center rounded-md bg-white/20 px-2 py-0.5 text-sm font-medium text-white ring-1 ring-blue-500/30 ring-inset"
           >
             @{mentionedName}
           </span>
@@ -502,7 +502,7 @@ export default function ThreadDetailPage() {
         parts.push(
           <span
             key={key++}
-            className="inline-flex items-center rounded-md bg-gray-50 px-2 py-0.5 text-sm font-medium text-gray-600"
+            className="inline-flex items-center rounded-md bg-white/10 px-2 py-0.5 text-sm font-medium text-gray-300"
           >
             @{mentionedName}
           </span>
@@ -540,9 +540,9 @@ export default function ThreadDetailPage() {
       );
 
       if (mentionedUser) {
-        html += `<span class="inline-flex items-center rounded-md bg-blue-50 px-1.5 py-0.5 text-sm font-medium text-blue-700 ring-1 ring-blue-600/20 ring-inset" data-mention="${mentionedName}">@${mentionedName}</span> `;
+        html += `<span class="inline-flex items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm font-medium text-white ring-1 ring-blue-500/30 ring-inset" data-mention="${mentionedName}">@${mentionedName}</span> `;
       } else {
-        html += `<span class="inline-flex items-center rounded-md bg-gray-50 px-1.5 py-0.5 text-sm font-medium text-gray-600">@${mentionedName}</span> `;
+        html += `<span class="inline-flex items-center rounded-md bg-white/10 px-1.5 py-0.5 text-sm font-medium text-gray-300">@${mentionedName}</span> `;
       }
 
       lastIndex = match.index + match[0].length;
@@ -637,8 +637,8 @@ export default function ThreadDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-700" />
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <Loader2 className="h-8 w-8 animate-spin text-white" />
       </div>
     );
   }
@@ -648,7 +648,7 @@ export default function ThreadDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-black">
       <Header
         user={user}
         title="Thread"
@@ -658,35 +658,35 @@ export default function ThreadDetailPage() {
       />
 
       <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mb-6 flex items-center justify-between rounded-lg bg-white px-6 py-4 shadow-sm ring-1 ring-gray-100">
+        <div className="mb-6 flex items-center justify-between rounded-lg bg-white/5 px-6 py-4 shadow-sm ring-1 ring-white/20">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-white">
               {getContactName(thread.contact)}
             </h1>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-400">
               {thread.contact.phone || thread.contact.email}
             </p>
           </div>
           <button
             onClick={() => setShowContactProfile(true)}
-            className="flex items-center space-x-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-400 hover:bg-gray-50"
+            className="flex items-center space-x-2 rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:border-slate-500 hover:bg-white/10"
           >
             <UserIcon className="h-4 w-4" />
             <span>View Profile</span>
           </button>
         </div>
 
-        <div className="rounded-lg bg-white shadow-sm ring-1 ring-gray-100">
-          <div className="border-b border-gray-200 px-6 py-4">
-            <h2 className="text-lg font-semibold text-gray-900">Messages</h2>
+        <div className="rounded-lg bg-white/5 shadow-sm ring-1 ring-white/20">
+          <div className="border-b border-white/20 px-6 py-4">
+            <h2 className="text-lg font-semibold text-white">Messages</h2>
           </div>
 
           <div className="max-h-[600px] overflow-y-auto px-6 py-4">
             <div className="space-y-4">
               {messages.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <MessageSquare className="h-12 w-12 text-gray-300" />
-                  <p className="mt-4 text-sm text-gray-500">No messages yet</p>
+                  <MessageSquare className="h-12 w-12 text-gray-600" />
+                  <p className="mt-4 text-sm text-gray-400">No messages yet</p>
                 </div>
               ) : (
                 messages.map((message) => (
@@ -702,15 +702,15 @@ export default function ThreadDetailPage() {
                       className={`max-w-xs rounded-lg px-4 py-2 ${
                         message.direction === "OUTBOUND"
                           ? message.status === "SCHEDULED"
-                            ? "bg-orange-100 text-orange-900"
-                            : "bg-blue-600 text-white"
-                          : "bg-gray-200 text-gray-900"
+                            ? "bg-white/20 text-white"
+                            : "bg-white text-white"
+                          : "bg-white/10 text-white"
                       }`}
                     >
                       <div className="mb-1 flex items-center space-x-2">
                         {getChannelBadge(message.channel)}
                         {message.status === "SCHEDULED" && (
-                          <span className="flex items-center space-x-1 rounded-full bg-orange-200 px-2 py-0.5 text-xs font-medium text-orange-800">
+                          <span className="flex items-center space-x-1 rounded-full border-2 border-white bg-white/20 px-2 py-0.5 text-xs font-medium text-white">
                             <Clock className="h-3 w-3" />
                             <span>Scheduled</span>
                           </span>
@@ -722,9 +722,9 @@ export default function ThreadDetailPage() {
                           className={`text-xs ${
                             message.direction === "OUTBOUND"
                               ? message.status === "SCHEDULED"
-                                ? "text-orange-700"
-                                : "text-blue-100"
-                              : "text-gray-500"
+                                ? "text-gray-300"
+                                : "text-white"
+                              : "text-gray-400"
                           }`}
                         >
                           {message.status === "SCHEDULED" && message.scheduledAt
@@ -736,9 +736,9 @@ export default function ThreadDetailPage() {
                             className={`ml-2 text-xs ${
                               message.direction === "OUTBOUND"
                                 ? message.status === "SCHEDULED"
-                                  ? "text-orange-600"
-                                  : "text-blue-200"
-                                : "text-gray-400"
+                                  ? "text-white"
+                                  : "text-white"
+                                : "text-gray-500"
                             }`}
                           >
                             {message.user.firstName} {message.user.lastName}
@@ -752,25 +752,25 @@ export default function ThreadDetailPage() {
             </div>
           </div>
 
-          <div className="border-t border-gray-200 bg-white px-6 py-4">
+          <div className="border-t border-white/20 bg-white/5 px-6 py-4">
             {canSendMessages ? (
               <div className="space-y-3">
                 {isScheduled && (
-                  <div className="flex items-center space-x-2 rounded-lg bg-orange-50 p-3">
-                    <Clock className="h-4 w-4 text-orange-600" />
+                  <div className="flex items-center space-x-2 rounded-lg bg-white/20 p-3">
+                    <Clock className="h-4 w-4 text-white" />
                     <input
                       type="datetime-local"
                       value={scheduledDateTime}
                       onChange={(e) => setScheduledDateTime(e.target.value)}
                       min={new Date().toISOString().slice(0, 16)}
-                      className="flex-1 rounded-lg border border-orange-300 bg-white px-3 py-2 text-sm focus:border-orange-500 focus:ring-orange-500 focus:outline-none"
+                      className="flex-1 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white focus:border-white focus:ring-white/50 focus:outline-none"
                     />
                     <button
                       onClick={() => {
                         setIsScheduled(false);
                         setScheduledDateTime("");
                       }}
-                      className="text-sm text-orange-600 hover:text-orange-700"
+                      className="text-sm text-white hover:text-white"
                     >
                       Cancel
                     </button>
@@ -788,14 +788,14 @@ export default function ThreadDetailPage() {
                       }
                     }}
                     placeholder="Type a message..."
-                    className="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-gray-900 focus:ring-gray-900 focus:outline-none"
+                    className="flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-white placeholder:text-gray-400 focus:border-white focus:ring-white/50 focus:outline-none"
                   />
                   <button
                     onClick={() => setIsScheduled(!isScheduled)}
                     className={`rounded-lg px-3 py-2 transition-all ${
                       isScheduled
-                        ? "bg-orange-600 text-white hover:bg-orange-700"
-                        : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                        ? "border-2 border-white bg-white text-black hover:bg-black hover:text-white"
+                        : "border border-white/20 bg-white/10 text-white hover:bg-white/10"
                     }`}
                     title="Schedule message"
                   >
@@ -804,7 +804,7 @@ export default function ThreadDetailPage() {
                   <button
                     onClick={handleSendMessage}
                     disabled={!messageContent.trim() || isSending}
-                    className="rounded-lg bg-gray-900 px-6 py-2 text-white transition-all hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-lg border-2 border-white bg-white px-6 py-2 text-black transition-all hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isSending ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
@@ -815,8 +815,8 @@ export default function ThreadDetailPage() {
                 </div>
               </div>
             ) : (
-              <div className="rounded-lg bg-gray-50 px-4 py-3 text-center">
-                <p className="text-sm text-gray-600">
+              <div className="rounded-lg bg-white/10 px-4 py-3 text-center">
+                <p className="text-sm text-gray-300">
                   Viewers can only view messages. Contact an admin to send
                   messages.
                 </p>
@@ -828,15 +828,15 @@ export default function ThreadDetailPage() {
 
       {showContactProfile && (
         <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4">
-          <div className="flex h-[90vh] w-full max-w-4xl flex-col rounded-lg bg-white shadow-xl">
-            <div className="border-b border-gray-200 px-6 py-4">
+          <div className="flex h-[90vh] w-full max-w-4xl flex-col rounded-lg bg-white/5 shadow-xl ring-1 ring-white/20">
+            <div className="border-b border-white/20 px-6 py-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">
+                <h2 className="text-xl font-semibold text-white">
                   Contact Profile
                 </h2>
                 <button
                   onClick={() => setShowContactProfile(false)}
-                  className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                  className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -844,8 +844,8 @@ export default function ThreadDetailPage() {
             </div>
             <div className="flex-1 overflow-y-auto px-6 py-4">
               <div className="space-y-6">
-                <div className="rounded-lg bg-gray-50 p-4">
-                  <h3 className="mb-2 text-sm font-medium text-gray-700">
+                <div className="rounded-lg bg-white/5 p-4">
+                  <h3 className="mb-2 text-sm font-medium text-white">
                     Contact Information
                   </h3>
                   <div className="space-y-2 text-sm">
@@ -869,16 +869,16 @@ export default function ThreadDetailPage() {
                 </div>
 
                 <div>
-                  <h3 className="mb-4 text-lg font-semibold text-gray-900">
+                  <h3 className="mb-4 text-lg font-semibold text-white">
                     History Timeline
                   </h3>
                   <div className="space-y-3">
                     {messages.map((message) => (
                       <div
                         key={message.id}
-                        className="flex items-start space-x-3 border-l-2 border-gray-200 pl-4"
+                        className="flex items-start space-x-3 border-l-2 border-white/20 pl-4"
                       >
-                        <div className="mt-1 flex h-2 w-2 rounded-full bg-blue-600"></div>
+                        <div className="mt-1 flex h-2 w-2 rounded-full bg-white"></div>
                         <div className="flex-1">
                           <div className="flex items-center space-x-2">
                             {getChannelBadge(message.channel)}
@@ -886,7 +886,7 @@ export default function ThreadDetailPage() {
                               {new Date(message.createdAt).toLocaleString()}
                             </span>
                           </div>
-                          <p className="mt-1 text-sm text-gray-700">
+                          <p className="mt-1 text-sm text-white">
                             {message.content}
                           </p>
                           {message.user && (
@@ -903,12 +903,12 @@ export default function ThreadDetailPage() {
 
                 <div>
                   <div className="mb-4 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold text-white">
                       Notes
                     </h3>
                     <button
                       onClick={() => setShowAddNote(true)}
-                      className="flex items-center space-x-2 rounded-lg bg-gray-900 px-3 py-1.5 text-sm font-medium text-white transition-all hover:bg-gray-800"
+                      className="flex items-center space-x-2 rounded-lg border-2 border-white bg-white px-3 py-1.5 text-sm font-medium text-black transition-all hover:bg-black hover:text-white"
                     >
                       <Plus className="h-4 w-4" />
                       <span>Add Note</span>
@@ -916,7 +916,7 @@ export default function ThreadDetailPage() {
                   </div>
 
                   {showAddNote && (
-                    <div className="relative mb-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+                    <div className="relative mb-4 rounded-lg border border-white/20 bg-white/5 p-4">
                       <div
                         ref={noteContentEditableRef}
                         contentEditable
@@ -941,7 +941,7 @@ export default function ThreadDetailPage() {
                           }
                         }}
                         data-placeholder="Write a note... Use @ to mention team members"
-                        className="mb-3 min-h-[100px] w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm empty:before:text-gray-400 empty:before:content-[attr(data-placeholder)] focus:border-gray-900 focus:ring-gray-900 focus:outline-none"
+                        className="mb-3 min-h-[100px] w-full rounded-lg border border-white/20 bg-white px-3 py-2 text-sm empty:before:text-gray-400 empty:before:content-[attr(data-placeholder)] focus:border-white focus:ring-white/50 focus:outline-none"
                         suppressContentEditableWarning
                       />
                       {showMentions &&
@@ -949,28 +949,28 @@ export default function ThreadDetailPage() {
                         filteredUsers.length > 0 && (
                           <div
                             data-mention-dropdown="true"
-                            className="absolute bottom-full left-0 z-50 mb-2 max-h-56 w-full overflow-auto rounded-xl border border-gray-200 bg-white shadow-2xl"
+                            className="absolute bottom-full left-0 z-50 mb-2 max-h-56 w-full overflow-auto rounded-xl border border-white/20 bg-white shadow-2xl"
                           >
                             {filteredUsers.slice(0, 5).map((u) => (
                               <button
                                 key={u.id}
                                 onClick={() => insertMention(u, "add")}
-                                className="flex w-full items-center space-x-3 px-4 py-3 text-left transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-gray-50"
+                                className="flex w-full items-center space-x-3 px-4 py-3 text-left text-white transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-white/10"
                               >
                                 {u.image ? (
                                   <img
                                     src={u.image}
                                     alt={`${u.firstName} ${u.lastName}`}
-                                    className="h-10 w-10 rounded-full ring-2 ring-gray-100"
+                                    className="h-10 w-10 rounded-full ring-2 ring-white/20"
                                   />
                                 ) : (
-                                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-sm font-semibold text-white ring-2 ring-gray-100">
+                                  <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-white text-black text-sm font-semibold ring-2 ring-white/20">
                                     {(u.firstName?.[0] || "").toUpperCase()}
                                     {(u.lastName?.[0] || "").toUpperCase()}
                                   </div>
                                 )}
                                 <div className="min-w-0 flex-1">
-                                  <p className="truncate text-sm font-medium text-gray-900">
+                                  <p className="truncate text-sm font-medium text-white">
                                     {u.firstName} {u.lastName}
                                   </p>
                                   <p className="truncate text-xs text-gray-500">
@@ -978,19 +978,19 @@ export default function ThreadDetailPage() {
                                   </p>
                                 </div>
                                 <div className="flex-shrink-0">
-                                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                                  <div className="h-2 w-2 rounded-full bg-white"></div>
                                 </div>
                               </button>
                             ))}
                           </div>
                         )}
                       <div className="mb-3 flex items-center justify-between">
-                        <label className="flex items-center space-x-2 text-sm text-gray-700">
+                        <label className="flex items-center space-x-2 text-sm text-white">
                           <input
                             type="checkbox"
                             checked={noteIsPublic}
                             onChange={(e) => setNoteIsPublic(e.target.checked)}
-                            className="rounded border-gray-300"
+                            className="rounded border-white/20"
                           />
                           <span className="flex items-center space-x-1">
                             {noteIsPublic ? (
@@ -1013,7 +1013,7 @@ export default function ThreadDetailPage() {
                         <button
                           onClick={handleCreateNote}
                           disabled={!noteContent.trim()}
-                          className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="rounded-lg border-2 border-white bg-white px-4 py-2 text-sm font-medium text-black transition-all hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           Save Note
                         </button>
@@ -1026,7 +1026,7 @@ export default function ThreadDetailPage() {
                               noteContentEditableRef.current.textContent = "";
                             }
                           }}
-                          className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-50"
+                          className="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/20"
                         >
                           Cancel
                         </button>
@@ -1039,7 +1039,7 @@ export default function ThreadDetailPage() {
                       <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
                     </div>
                   ) : notes.length === 0 ? (
-                    <div className="rounded-lg border border-gray-200 p-8 text-center">
+                    <div className="rounded-lg border border-white/20 p-8 text-center">
                       <p className="text-sm text-gray-500">No notes yet</p>
                     </div>
                   ) : (
@@ -1051,13 +1051,13 @@ export default function ThreadDetailPage() {
                         return (
                           <div
                             key={note.id}
-                            className="rounded-lg border border-gray-200 bg-white p-4"
+                            className="rounded-lg border border-white/20 bg-white/5 p-4"
                           >
                             {isEditing ? (
                               <div className="relative">
                                 {activeEditors.get(note.id) &&
                                   activeEditors.get(note.id)!.length > 0 && (
-                                    <div className="mb-2 flex items-center space-x-2 text-xs text-orange-600">
+                                    <div className="mb-2 flex items-center space-x-2 text-xs text-white">
                                       <Loader2 className="h-3 w-3 animate-spin" />
                                       <span>
                                         {activeEditors
@@ -1102,7 +1102,7 @@ export default function ThreadDetailPage() {
                                     }
                                   }}
                                   data-placeholder="Edit note... Use @ to mention team members"
-                                  className="mb-3 min-h-[100px] w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm empty:before:text-gray-400 empty:before:content-[attr(data-placeholder)] focus:border-gray-900 focus:ring-gray-900 focus:outline-none"
+                                  className="mb-3 min-h-[100px] w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-sm text-white empty:before:text-gray-400 empty:before:content-[attr(data-placeholder)] focus:border-white focus:ring-white/50 focus:outline-none"
                                   suppressContentEditableWarning
                                   dangerouslySetInnerHTML={{
                                     __html: renderMentionsToHTML(editContent),
@@ -1113,7 +1113,7 @@ export default function ThreadDetailPage() {
                                   filteredUsers.length > 0 && (
                                     <div
                                       data-mention-dropdown="true"
-                                      className="absolute bottom-full left-0 z-50 mb-2 max-h-56 w-full overflow-auto rounded-xl border border-gray-200 bg-white shadow-2xl"
+                                      className="absolute bottom-full left-0 z-50 mb-2 max-h-56 w-full overflow-auto rounded-xl border border-white/20 bg-black shadow-2xl"
                                     >
                                       {filteredUsers.slice(0, 5).map((u) => (
                                         <button
@@ -1121,16 +1121,16 @@ export default function ThreadDetailPage() {
                                           onClick={() =>
                                             insertMention(u, note.id)
                                           }
-                                          className="flex w-full items-center space-x-3 px-4 py-3 text-left transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-gray-50"
+                                          className="flex w-full items-center space-x-3 px-4 py-3 text-left text-white transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-white/10"
                                         >
                                           {u.image ? (
                                             <img
                                               src={u.image}
                                               alt={`${u.firstName} ${u.lastName}`}
-                                              className="h-10 w-10 rounded-full ring-2 ring-gray-100"
+                                              className="h-10 w-10 rounded-full ring-2 ring-white/20"
                                             />
                                           ) : (
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-sm font-semibold text-white ring-2 ring-gray-100">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-white text-black text-sm font-semibold ring-2 ring-white/20">
                                               {(
                                                 u.firstName?.[0] || ""
                                               ).toUpperCase()}
@@ -1140,7 +1140,7 @@ export default function ThreadDetailPage() {
                                             </div>
                                           )}
                                           <div className="min-w-0 flex-1">
-                                            <p className="truncate text-sm font-medium text-gray-900">
+                                            <p className="truncate text-sm font-medium text-white">
                                               {u.firstName} {u.lastName}
                                             </p>
                                             <p className="truncate text-xs text-gray-500">
@@ -1148,7 +1148,7 @@ export default function ThreadDetailPage() {
                                             </p>
                                           </div>
                                           <div className="flex-shrink-0">
-                                            <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                                            <div className="h-2 w-2 rounded-full bg-white"></div>
                                           </div>
                                         </button>
                                       ))}
@@ -1161,7 +1161,7 @@ export default function ThreadDetailPage() {
                                     onChange={(e) =>
                                       setEditIsPublic(e.target.checked)
                                     }
-                                    className="rounded border-gray-300"
+                                    className="rounded border-white/20"
                                   />
                                   <span className="flex items-center space-x-1">
                                     {editIsPublic ? (
@@ -1186,7 +1186,7 @@ export default function ThreadDetailPage() {
                                         editIsPublic
                                       )
                                     }
-                                    className="rounded-lg bg-gray-900 px-3 py-1.5 text-sm font-medium text-white transition-all hover:bg-gray-800"
+                                    className="rounded-lg border-2 border-white bg-white px-3 py-1.5 text-sm font-medium text-black transition-all hover:bg-black hover:text-white"
                                   >
                                     Save
                                   </button>
@@ -1194,7 +1194,7 @@ export default function ThreadDetailPage() {
                                     onClick={() => {
                                       setEditingNoteId(null);
                                     }}
-                                    className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-all hover:bg-gray-50"
+                                    className="rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-sm font-medium text-white transition-all hover:bg-white/20"
                                   >
                                     Cancel
                                   </button>
@@ -1227,7 +1227,7 @@ export default function ThreadDetailPage() {
                                               );
                                           }
                                         }}
-                                        className="rounded-lg p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                                        className="rounded-lg p-1 text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
                                       >
                                         <Edit className="h-4 w-4" />
                                       </button>
@@ -1242,7 +1242,7 @@ export default function ThreadDetailPage() {
                                     </div>
                                   )}
                                 </div>
-                                <div className="mb-2 text-sm text-gray-700">
+                                <div className="mb-2 text-sm text-white">
                                   {renderMentions(note.content)}
                                 </div>
                                 <div className="flex items-center justify-between text-xs text-gray-500">
@@ -1266,7 +1266,7 @@ export default function ThreadDetailPage() {
                 </div>
               </div>
             </div>
-            <div className="border-t border-gray-200 px-6 py-4">
+            <div className="border-t border-white/20 px-6 py-4">
               <div className="flex items-center justify-end space-x-3">
                 <button
                   onClick={() => {
@@ -1274,7 +1274,7 @@ export default function ThreadDetailPage() {
                       window.open(`tel:${thread.contact.phone}`, "_blank");
                     }
                   }}
-                  className="flex items-center space-x-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-400 hover:bg-gray-50"
+                  className="flex items-center space-x-2 rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:border-white/30 hover:bg-white/20"
                 >
                   <Phone className="h-4 w-4" />
                   <span>Dial</span>
@@ -1289,7 +1289,7 @@ export default function ThreadDetailPage() {
                       input.focus();
                     }
                   }}
-                  className="flex items-center space-x-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-gray-800"
+                  className="flex items-center space-x-2 rounded-lg border-2 border-white bg-white px-4 py-2 text-sm font-medium text-black shadow-sm transition-all hover:bg-black hover:text-white"
                 >
                   <Send className="h-4 w-4" />
                   <span>Send Message</span>
